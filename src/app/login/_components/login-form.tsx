@@ -31,6 +31,7 @@ type LoginFormValues = z.infer<typeof loginSchema>
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingGoogle, setIsLoadingGoogle] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [attempts, setAttempts] = useState(0)
   const [isBlocked, setIsBlocked] = useState(false)
@@ -100,7 +101,7 @@ export function LoginForm() {
     setIsLoading(true)
     setErrorMessage(null)
 
-    try {
+    try {      
       await authClient.signIn.email(
         {
           email: formData.email,
@@ -146,6 +147,9 @@ export function LoginForm() {
   }
 
   async function handleSignInWithGoogle() {
+    if (isBlocked) return
+
+    setIsLoadingGoogle(true)
     try {
       await authClient.signIn.social({
         provider: "google",
@@ -153,6 +157,8 @@ export function LoginForm() {
       })
     } catch (err) {
       console.error("Erro ao entrar com Google:", err)
+    } finally {
+      setIsLoadingGoogle(false)
     }
   }
 
@@ -182,11 +188,10 @@ export function LoginForm() {
           {/* Mensagem de erro global */}
           {errorMessage && (
             <div
-              className={`p-3 rounded-lg border text-sm text-center ${
-                isBlocked
+              className={`p-3 rounded-lg border text-sm text-center ${isBlocked
                   ? "bg-yellow-500/10 border-yellow-500/40 text-yellow-400"
                   : "bg-red-500/10 border-red-500/30 text-red-400"
-              }`}
+                }`}
             >
               {errorMessage}
               {!isBlocked && attempts > 0 && (
@@ -215,11 +220,10 @@ export function LoginForm() {
                     type="email"
                     placeholder="voce@exemplo.com"
                     disabled={isLoading || isBlocked}
-                    className={`bg-white/20 text-white placeholder-gray-200 outline-none focus:ring-2 ${
-                      errors.email
+                    className={`bg-white/20 text-white placeholder-gray-200 outline-none focus:ring-2 ${errors.email
                         ? "border border-red-500 focus:ring-red-500"
                         : "border border-blue-300/30 focus:ring-blue-400"
-                    }`}
+                      }`}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500" />
@@ -241,11 +245,10 @@ export function LoginForm() {
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       disabled={isLoading || isBlocked}
-                      className={`bg-white/20 text-white placeholder-gray-200 outline-none focus:ring-2 ${
-                        errors.password
+                      className={`bg-white/20 text-white placeholder-gray-200 outline-none focus:ring-2 ${errors.password
                           ? "border border-red-500 focus:ring-red-500"
                           : "border border-blue-300/30 focus:ring-blue-400"
-                      }`}
+                        }`}
                     />
                     <Button
                       type="button"
@@ -267,11 +270,10 @@ export function LoginForm() {
           {/* Botão principal */}
           <Button
             type="submit"
-            className={`w-full font-semibold py-3 rounded-xl transition shadow-md ${
-              isBlocked
+            className={`w-full font-semibold py-3 rounded-xl transition shadow-md ${isBlocked
                 ? "bg-slate-600 cursor-not-allowed"
                 : "bg-gradient-to-r from-blue-500 to-slate-500 hover:from-blue-600 hover:to-slate-600 text-white"
-            }`}
+              }`}
             disabled={isLoading || isBlocked}
           >
             {isLoading ? (
@@ -291,10 +293,21 @@ export function LoginForm() {
             variant="outline"
             className="w-full border border-blue-400/30 text-blue-400 hover:bg-blue-500/20"
             onClick={handleSignInWithGoogle}
-            disabled={isBlocked}
+            disabled={isLoadingGoogle || isBlocked}
           >
-            <GoogleLogoIcon className="mr-2 h-4 w-4" />
-            Entrar com Google
+            {isLoadingGoogle ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> <GoogleLogoIcon className="mr-2 h-4 w-4" /> Entrando...
+              </>
+            ) : isBlocked ? (
+              `Bloqueado (${timer}s)`
+            ) : (
+              <>
+                <GoogleLogoIcon className="mr-2 h-4 w-4" />
+                Entrar com Google
+              </>
+            )}
+
           </Button>
         </form>
       </Form>

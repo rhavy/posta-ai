@@ -73,9 +73,9 @@ export function EnderecoSection({ userId, perfil }: EnderecoSectionProps) {
     buscarEnderecoPorCep(cep);
   }, [cep, userId]);
 
-   const handleCepChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        setCep(e.target.value);
-    };
+  const handleCepChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setCep(e.target.value);
+  };
 
   return (
     <section className="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
@@ -84,28 +84,39 @@ export function EnderecoSection({ userId, perfil }: EnderecoSectionProps) {
       </h3>
 
       <div className="space-y-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <InputAutoSalve
-            userId={userId}
-            valorInicial={enderecoAuto.rua}
-            label="Rua"
-            campo="rua"
-            tabela="Perfil"
-            tipo="text"
-            cad={false}
-          />
-          <InputAutoSalve
-            userId={userId}
-            valorInicial={perfil?.numero || ""}
-            label="Número"
-            campo="numero"
-            tabela="Perfil"
-            tipo="text"
-            cad={false}
-          />
+        <div className="flex">
+          <div className="w-1/2">
+            <InputAutoSalve
+              nome="Top"
+              userId={userId}
+              valorInicial={enderecoAuto.rua}
+              label="Rua"
+              campo="rua"
+              tabela="Perfil"
+              tipo="text"
+              cad={false}
+            />
+          </div>
+
+          {/* Componente alinhado à direita */}
+          <div className="w-1/2 ">
+            <div className="w-full max-w-xs">
+              <InputAutoSalve
+                nome="Top"
+                userId={userId}
+                valorInicial={perfil?.numero || ""}
+                label="Número"
+                campo="numero"
+                tabela="Perfil"
+                tipo="text"
+                cad={false}
+              />
+            </div>
+          </div>
         </div>
 
         <InputAutoSalve
+          nome="Top"
           userId={userId}
           valorInicial={perfil?.referencia || ""}
           label="Referência"
@@ -118,6 +129,7 @@ export function EnderecoSection({ userId, perfil }: EnderecoSectionProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <InputAutoSalve
+            nome="Top"
             userId={userId}
             valorInicial={enderecoAuto.bairro}
             label="Bairro"
@@ -127,6 +139,7 @@ export function EnderecoSection({ userId, perfil }: EnderecoSectionProps) {
             cad={false}
           />
           <InputAutoSalve
+            nome="Top"
             userId={userId}
             valorInicial={enderecoAuto.cidade}
             label="Cidade"
@@ -136,6 +149,7 @@ export function EnderecoSection({ userId, perfil }: EnderecoSectionProps) {
             cad={false}
           />
           <InputAutoSalve
+            nome="Top"
             userId={userId}
             valorInicial={enderecoAuto.estado}
             label="Estado"
@@ -145,6 +159,7 @@ export function EnderecoSection({ userId, perfil }: EnderecoSectionProps) {
             cad={false}
           />
           <InputAutoSalve
+            nome="Top"
             userId={userId}
             valorInicial={enderecoAuto.pais}
             label="País"
@@ -154,6 +169,7 @@ export function EnderecoSection({ userId, perfil }: EnderecoSectionProps) {
             cad={false}
           />
           <InputAutoSalve
+            nome="Top"
             userId={userId}
             valorInicial={cep}
             label="CEP"

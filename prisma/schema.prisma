@@ -115,10 +115,20 @@ model Post {
   title     String
   content   String
   authorId  String
+  image          String?   @db.Text
+  imagePosition  String?   @db.Text // New field
+  titleAlignment String?   @db.Text // New field
   author    User      @relation(fields: [authorId], references: [id])
   comments  Comment[]
   createdAt DateTime  @default(now())
 }
+
+enum ImagePosition {
+  left
+  right
+  center
+}
+
 
 model Comment {
   id        String    @id @default(uuid())

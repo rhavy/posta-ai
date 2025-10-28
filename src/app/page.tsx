@@ -1,23 +1,78 @@
 // app/page.tsx
 "use client";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import Hero from "@/components/template/hero";
 import Footer from "@/components/template/footer";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-  // Simulação de feed de posts para preview
   const fakePosts = [
     { title: "Aprendendo Next.js", author: "João", excerpt: "Descubra como criar aplicações modernas com Next.js e Tailwind..." },
     { title: "Prisma + MySQL", author: "Maria", excerpt: "Integre seu banco de dados com Prisma e MySQL de forma eficiente..." },
     { title: "shadcn/ui Components", author: "Carlos", excerpt: "Construa interfaces bonitas e consistentes usando shadcn/ui..." },
   ];
 
+  const menuItems = [
+    { label: "Sobre", href: "#sobre" },
+    { label: "Funcionalidades", href: "#funcionalidades" },
+    { label: "Preview do Feed", href: "#feed" },
+    { label: "Contato", href: "#footer" },
+  ];
+
+  const [activeSection, setActiveSection] = useState("Sobre");
+
+  // Detecta seção ativa ao rolar a página
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = menuItems.map(item => document.querySelector(item.href));
+      sections.forEach((sec, idx) => {
+        if (sec) {
+          const top = sec.getBoundingClientRect().top;
+          if (top <= 120 && top >= -300) {
+            setActiveSection(menuItems[idx].label);
+          }
+        }
+      });
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="font-sans">
-      {/* Hero Premium */}
-
+      {/* Hero */}
       <Hero />
+
+      {/* Menu abaixo do Hero */}
+      <motion.nav
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white shadow-md sticky top-0 z-50"
+      >
+        <div className="max-w-6xl mx-auto px-4 py-3 flex justify-center gap-8">
+          {menuItems.map((item, idx) => (
+            <Link
+              key={idx}
+              href={item.href}
+              className={`relative font-medium transition-colors ${
+                activeSection === item.label ? "text-blue-600" : "text-gray-700"
+              }`}
+            >
+              {item.label}
+              {activeSection === item.label && (
+                <motion.span
+                  layoutId="underline"
+                  className="absolute left-0 -bottom-1 w-full h-0.5 bg-blue-600 rounded"
+                />
+              )}
+            </Link>
+          ))}
+        </div>
+      </motion.nav>
 
       {/* Sobre */}
       <section id="sobre" className="max-w-5xl mx-auto py-20 px-4 text-center">
@@ -41,32 +96,41 @@ export default function Home() {
         </motion.p>
       </section>
 
-      {/* Funcionalidades com animação */}
-      <section className="bg-gray-50 py-20">
+      {/* Funcionalidades */}
+      <section id="funcionalidades" className="bg-gray-50 py-20">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Funcionalidades</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Feed de Posts", color: "bg-blue-500", icon: (
+                title: "Feed de Posts",
+                color: "bg-blue-500",
+                icon: (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
-                ), description: "Visualize posts em ordem cronológica, busque por título ou autor, e acompanhe os conteúdos mais recentes."
+                ),
+                description: "Visualize posts em ordem cronológica, busque por título ou autor, e acompanhe os conteúdos mais recentes."
               },
               {
-                title: "Área do Usuário", color: "bg-green-500", icon: (
+                title: "Área do Usuário",
+                color: "bg-green-500",
+                icon: (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A7 7 0 0112 15a7 7 0 016.879 2.804M12 7a4 4 0 100 8 4 4 0 000-8z" />
                   </svg>
-                ), description: "Crie, edite e exclua seus posts, com acesso à sua lista de comentários e perfil personalizado."
+                ),
+                description: "Crie, edite e exclua seus posts, com acesso à sua lista de comentários e perfil personalizado."
               },
               {
-                title: "Interatividade", color: "bg-purple-500", icon: (
+                title: "Interatividade",
+                color: "bg-purple-500",
+                icon: (
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.265 0-2.454-.256-3.537-.724L3 20l1.724-5.463A7.961 7.961 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
-                ), description: "Comente em posts de outros usuários, interaja com conteúdos e construa sua presença na plataforma."
+                ),
+                description: "Comente em posts de outros usuários, interaja com conteúdos e construa sua presença na plataforma."
               },
             ].map((item, idx) => (
               <motion.div
@@ -89,8 +153,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Preview de posts animado */}
-      <section className="py-20 max-w-6xl mx-auto px-4">
+      {/* Preview do Feed */}
+      <section id="feed" className="py-20 max-w-6xl mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Preview do Feed</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {fakePosts.map((post, idx) => (
@@ -114,8 +178,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Call-to-Action Final */}
-      <Footer />
+      {/* Footer */}
+      <section id="footer">
+        <Footer />
+      </section>
     </div>
   );
 }

@@ -12,11 +12,8 @@ import {
   LayoutDashboard,
   User2,
   PanelBottom,
-  Users2,
-  Wallet,
-  Truck,
-  Calendar,
-  LogOut,
+  FileText,
+  FilePlus,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { auth } from "@/lib/auth";
@@ -28,7 +25,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { ButtonSignOut } from "@/components/ui/button-signout";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -48,10 +44,10 @@ export async function Sidebar() {
   const navLinks = [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/profile", label: "Profile", icon: User2 },
-    { href: "/members", label: "Membros", icon: Users2 },
-    { href: "/finances", label: "Finanças", icon: Wallet },
-    { href: "/fornecedores", label: "Fornecedores", icon: Truck },
-    { href: "/eventos", label: "Eventos", icon: Calendar },
+    { href: "/posts_create", label: "Criar Post", icon: FilePlus },
+    { href: "/posts", label: "Meus Posts", icon: FileText },
+    // { href: "/fornecedores", label: "Fornecedores", icon: Truck },
+    // { href: "/eventos", label: "Eventos", icon: Calendar },
   ];
 
   return (
